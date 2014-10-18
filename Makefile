@@ -13,6 +13,7 @@ disc:
 conn:
 	mkdir /tmp/mnt -p
 	./main /tmp/mnt 
+	tail -F bbfs.log
 clean:
 	rm -fr *.o main ${FUSE_FILE}
 test:
@@ -31,3 +32,5 @@ php:
 	sudo apt-get install php5
 	sudo apt-get install libapache2-mod-php5
 	sudo /etc/init.d/apache2 restart
+all: target disc conn
+	echo "run"

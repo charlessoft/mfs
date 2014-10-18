@@ -22,7 +22,25 @@
 using namespace std;
 #include "log.h"
 
+vector<string> g_cache;
+
 struct bb_state* bb_data;
+
+bool exist_file( const char* path )
+{
+
+    vector<string>::iterator iter;  
+    for (iter=g_cache.begin();iter!=g_cache.end();iter++)  
+    {  
+        string str = *iter;
+        if( str == path )
+            return true;
+        //cout<<*iter<<'\0';  
+        //filler(buf,(*iter).c_str(),null,0);
+    }  
+    return false;
+}
+
 int get_file_content( char* path, unsigned char** buf, int * nLen )
 {
     if( access(path,F_OK) !=1 )
@@ -58,6 +76,14 @@ int get_file_content( char* path, unsigned char** buf, int * nLen )
     }
 }
 
+int get_file( const char* path )
+{
+    log_msg("\nget_file()\n    path=%s\n",path);
+    Service CService;
+    //CService.HttpRequest("GET", BB_DATA->httpgeturl,)
+    return -1;
+}
+
 int post_file( const char* path )
 {
     string strUrl = "http://10.142.49.238:9080/udsfs/uploadfile";
@@ -73,6 +99,7 @@ int post_file( const char* path )
 
 
     int nLen = 0;
+    //修改--判断文件
     //if(access(path,F_OK) == 0 )
     //{
     //}
@@ -113,8 +140,19 @@ void *mfs_init(struct fuse_conn_info *conn)
 
 static int mfs_getattr(const char *path, struct stat *stbuf)
 {
+    log_msg("\nmfs_getattr\n    path=%s\n",path);
+    //get_file(path);
+    log_stat(stbuf);
+    //if(strcmp(path, "/") ==0 )
+        //stbuf->st_mode = 0755 | S_IFDIR;
+    //else 
+        //stbuf->st_mode = 0755 | S_IFREG;
+
+        //return 0;
 	int res = 0;
 	res = lstat(path, stbuf);
+    log_msg("\nmfs_getattr--lstat()\n    res=%d",res);
+    log_stat(stbuf);
 	if (res == -1)
 		return -errno;
 
@@ -142,8 +180,16 @@ static int mfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		       off_t offset, struct fuse_file_info *fi)
 {
 
-    return 0;
     log_msg("\nmfs_readdir()\n    path=%s\n    buf=0x%08x\n",path,buf);
+
+    
+    vector<string>::iterator iter;  
+    for (iter=g_cache.begin();iter!=g_cache.end();iter++)  
+    {  
+        //cout<<*iter<<'\0';  
+        filler(buf,(*iter).c_str(),NULL,0);
+    }  
+    return 0;
 	DIR *dp;
 	struct dirent *de;
 
@@ -214,6 +260,7 @@ static int mfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 
 static int mfs_unlink(const char *path)
 {
+    log_msg("\nmfs_unlink()\n    path=%s\n",path);
 	int res = 0;
 	res = unlink(path);
 	if (res == -1)
@@ -227,6 +274,7 @@ static int mfs_open(const char *path, struct fuse_file_info *fi)
 {
 	int res = 0;
 	res = open(path, fi->flags);
+    log_msg("\nmfs_open()\n    path=%s\nres=%d\n",path,res);
 	if (res == -1)
 		return -errno;
 
@@ -237,25 +285,21 @@ static int mfs_open(const char *path, struct fuse_file_info *fi)
 static int mfs_write(const char *path, const char *buf, size_t size,
 		     off_t offset, struct fuse_file_info *fi)
 {
+    log_msg("\nmfs_write()\n    path=%s\n    buf=0x%08x\n    size=%d\n    offset=%d\n",path,buf,size,offset);
     //int fd;
     int res;
 
-    //(void) fi;
-    //fd = open(path, O_WRONLY);
-    //if (fd == -1)
-        //return -errno;
-
-    //res = pwrite(fd, buf, size, offset);
-    //if (res == -1)
-        //res = -errno;
-
-    //close(fd);
-    log_msg("\nmfs_write()\n    path=%s\n    buf=0x%08x\n    size=%d    ",path,buf,size);
-
     log_fi(fi);
     log_msg("-------\n");
-    res = post_file(path);
+    //-------------修改post-----
+    res=11;
+    //res = post_file(path);
     log_msg("===postfile:res=%d\n",res);
+    if(res>0)
+    {
+        if(!exist_file(path+1))
+            g_cache.push_back(path+1);
+    }
     return res;
     
 
@@ -311,10 +355,18 @@ static int mfs_read(const char *path, char *buf, size_t size, off_t offset,
 	return res;
 }
 
+static int mfs_truncate(const char *path, off_t size)
+{
+	int res;
+
+	res = truncate(path, size);
+	if (res == -1)
+		return -errno;
+
+	return 0;
+}
+
  static struct vsfuse_oper : fuse_operations  {
-   //.getattr = bb_getattr,
-   //.init = bb_init,
-   //.destroy = bb_destroy,
      vsfuse_oper()
      {   
          //readdir = bb_readdir;
@@ -343,18 +395,18 @@ static int mfs_read(const char *path, char *buf, size_t size, off_t offset,
          write		= mfs_write;
 
                     //rename		= mfs_rename,
-    //truncate	= mfs_truncate,
-    //opendir    = mfs_opendir,
-    //access		= mfs_access,
-    //readlink	= mfs_readlink,
-    //mknod		= mfs_mknod,
-    //symlink	= mfs_symlink,
-    //link		= mfs_link,
-    //chmod		= mfs_chmod,
-    //chown		= mfs_chown,
-    //statfs		= mfs_statfs,
-    //release	= mfs_release,
-    //fsync		= mfs_fsync,
+         truncate	= mfs_truncate;
+    //opendir    = mfs_opendir;
+    //access		= mfs_access;
+    //readlink	= mfs_readlink;
+    //mknod		= mfs_mknod;
+    //symlink	= mfs_symlink;
+    //link		= mfs_link;
+    //chmod		= mfs_chmod;
+    //chown		= mfs_chown;
+    //statfs		= mfs_statfs;
+    //release	= mfs_release;
+    //fsync		= mfs_fsync;
  
      }   
  }mfs_oper;
@@ -395,29 +447,6 @@ static int mfs_read(const char *path, char *buf, size_t size, off_t offset,
 //};
 
 
-int test1()
-{
-
-    CURLcode curl_res;
-    CURL* curl;
-    curl_res = curl_global_init(CURL_GLOBAL_ALL);
-    char* http_posturl = "http://10.142.49.238:9080/udsfs/uploadfile";
-    if(curl_res != CURLE_OK )
-    {
-        printf("fail\n");
-    }
-    curl = curl_easy_init();
-    struct curl_httppost *formpost = 0;
-    struct curl_httppost *lastptr  = 0;
-    curl_formadd(&formpost, &lastptr, CURLFORM_PTRNAME, "file", CURLFORM_FILE, "/tmp/10K.txt", CURLFORM_END);
-    curl_easy_setopt( curl, CURLOPT_VERBOSE, 1);
-    curl_easy_setopt(curl,CURLOPT_URL, http_posturl );
-    curl_easy_setopt(curl, CURLOPT_HTTPPOST,formpost);
-    curl_easy_perform(curl);
-    curl_formfree(formpost);
-    return 1;
-
-}
 
 int get_file_size(char *filename)
 {
@@ -441,33 +470,14 @@ int get_file_size(char *filename)
     return file_len;
 }
 
-int post_file1( char* path )
-{
-    struct curl_httppost *formpost = 0;
-    struct curl_httppost *lastptr  = 0;
-    int nfilesize = get_file_size( path );
-    //curl_formadd(&formpost, &lastptr, CURLFORM_PTRNAME, "file", CURLFORM_FILE, "/tmp/10K.txt", CURLFORM_END);
-    //curl_easy_setopt(BB_DATA->connection, CURLOPT_VERBOSE, 1);
-    //curl_easy_setopt(BB_DATA->connection,CURLOPT_URL, BB_DATA->httpposturl);
-    //curl_easy_setopt(BB_DATA->connection, CURLOPT_HTTPPOST,formpost);
-    //CURLcode curl_code = curl_easy_perform(BB_DATA->connection);
-    //curl_formfree(formpost);
-
-    curl_formadd(&formpost, &lastptr, CURLFORM_PTRNAME, "file", CURLFORM_FILE, "/tmp/10K.txt", CURLFORM_END);
-    curl_easy_setopt(BB_DATA->connection, CURLOPT_URL, BB_DATA->httpposturl);
-    curl_easy_setopt(BB_DATA->connection, CURLOPT_HTTPPOST, formpost);
-    CURLcode curl_res  = curl_easy_perform(BB_DATA->connection);
-    curl_formfree(formpost);
-    log_msg("post_file()\n    nfilesize=%d\n    curl_res=%d\n",nfilesize, 
-            curl_res );
-    if (curl_res == CURLE_OK) {
-        return nfilesize;    
-    }
-    return -1;
-}
 
 int main(int argc, char *argv[])
 {
+    //char* path = "/";
+    //const char* lastdir = strrchr(path,'/');
+    ////printf("lastdir=%s\n",lastdir);
+    //printf("ss=%d\n",lastdir-path);
+    //return 0;
     //unsigned char* buf= NULL;
     //int nlen =0;
     //char* pdata = "/ss";
