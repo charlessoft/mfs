@@ -1,0 +1,27 @@
+    conn:
+    proto_major = 7
+    proto_minor = 17
+    async_read = 1
+    max_write = 131072
+    max_readahead = 131072
+    capable = 000007fb
+    want = 00000010
+    max_background = 0
+    congestion_threshold = 0
+
+mfs_write()
+    path=/ss
+    buf=0x0ff8f060
+    size=3        fi:
+    flags = 0x00008001
+    fh_old = 0x00000005
+    writepage = 0
+    direct_io = 0
+    keep_cache = 0
+    fh = 0x0000000000000005
+    lock_owner = 0x0000000000000000
+-------
+
+mfs_readdir()
+    path=/
+    buf=0x10000ce0

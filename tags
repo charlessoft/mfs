@@ -1,0 +1,141 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BB_DATA	params.h	64;"	d
+BOOL	CService.h	7;"	d
+CPPFLAGS	Makefile	/^CPPFLAGS=-D_FILE_OFFSET_BITS=64$/;"	m
+DWORD	CService.h	/^typedef unsigned long int DWORD;$/;"	t
+FALSE	CService.h	8;"	d
+FILEACCESS	CService.h	/^} FILEACCESS, *LPFILEACCESS;$/;"	t	typeref:struct:_FILEACCESS_
+FILEWRITE	CService.h	/^} FILEWRITE,*LPFILEWRITE;$/;"	t	typeref:struct:_FILEWRITE_
+FUSE_FILE	Makefile	/^FUSE_FILE=fuse-2.9.3$/;"	m
+FUSE_USE_VERSION	main.c	3;"	d	file:
+FUSE_USE_VERSION	params.h	17;"	d
+GETPROCESS	CService.h	/^} GETPROCESS,*LPGEPROCESS;$/;"	t	typeref:struct:_GETPROCESS_
+GXX	Makefile	/^GXX=g++ -g -Wall$/;"	m
+GetBlock	CService.h	/^    int ( *GetBlock )( _FILEACCESS_* pThis, unsigned long position, unsigned char** pBuf, unsigned long size );$/;"	m	struct:_FILEACCESS_
+GetFilePath	CService.h	/^    BOOL ( *GetFilePath )( _FILEACCESS_* pThis, wchar_t** pFilePath );$/;"	m	struct:_FILEACCESS_
+GetFileSize	CService.h	/^    int ( *GetFileSize )( _FILEACCESS_* pThis, unsigned long* size );$/;"	m	struct:_FILEACCESS_
+GetProcessFunc	CService.h	/^    void ( *GetProcessFunc )( struct _GETPROCESS_* pThis, int nProcess );$/;"	m	struct:_GETPROCESS_
+HTTPDATA	CService.h	/^} HTTPDATA,*LPHTTPDATA;$/;"	t	typeref:struct:_HttpData_
+HttpRequest	CService.cpp	/^int Service::HttpRequest( const string http_method,$/;"	f	class:Service
+LDFLAGS	Makefile	/^LDFLAGS=-lstdc++ -lcurl$/;"	m
+LPFILEACCESS	CService.h	/^} FILEACCESS, *LPFILEACCESS;$/;"	t	typeref:struct:_FILEACCESS_
+LPFILEWRITE	CService.h	/^} FILEWRITE,*LPFILEWRITE;$/;"	t	typeref:struct:_FILEWRITE_
+LPGEPROCESS	CService.h	/^} GETPROCESS,*LPGEPROCESS;$/;"	t	typeref:struct:_GETPROCESS_
+LPHTTPDATA	CService.h	/^} HTTPDATA,*LPHTTPDATA;$/;"	t	typeref:struct:_HttpData_
+MAX_PATH	CService.h	11;"	d
+MFS_DATA	typedef.h	9;"	d
+ProgressCallback	CService.cpp	/^int Service::ProgressCallback( const void* userp, double dltotal, double dlnow, double ultotal, double ulnow )$/;"	f	class:Service
+SOURCES	Makefile	/^SOURCES=.\/main.c \\$/;"	m
+Service	CService.cpp	/^Service::Service()$/;"	f	class:Service
+Service	CService.h	/^class Service$/;"	c
+SetDownloaddProcess	CService.cpp	/^void Service::SetDownloaddProcess( GETPROCESS* pGetDownLoadProcess )$/;"	f	class:Service
+SetFileWrite	CService.cpp	/^void Service::SetFileWrite( FILEWRITE* pFileWriteStruct )$/;"	f	class:Service
+SetUploadProcess	CService.cpp	/^void Service::SetUploadProcess( GETPROCESS* pGetProcess )$/;"	f	class:Service
+TRUE	CService.h	9;"	d
+UploadCallback	CService.cpp	/^size_t Service::UploadCallback( void *buffer, size_t sz, size_t nmemb, void *userp )$/;"	f	class:Service
+WriteBlock	CService.h	/^    int ( *WriteBlock )( _FILEWRITE_* pThis, const void* pData, unsigned long size );$/;"	m	struct:_FILEWRITE_
+WriteCallback	CService.cpp	/^size_t Service::WriteCallback( char* data, size_t size, size_t nitems, void* userp )$/;"	f	class:Service
+WriteHeaderCallback	CService.cpp	/^size_t Service::WriteHeaderCallback( char *data, size_t size, size_t nmemb, void* userp )$/;"	f	class:Service
+_CSERVICE_H_	CService.h	2;"	d
+_FILEACCESS_	CService.h	/^typedef struct _FILEACCESS_$/;"	s
+_FILEWRITE_	CService.h	/^typedef struct _FILEWRITE_$/;"	s
+_GETPROCESS_	CService.h	/^typedef struct _GETPROCESS_$/;"	s
+_HttpData_	CService.h	/^typedef struct _HttpData_$/;"	s
+_LOG_H_	log.h	9;"	d
+_PARAMS_H_	params.h	12;"	d
+_TYPEDEF_H_	typedef.h	2;"	d
+_XOPEN_SOURCE	params.h	21;"	d
+attached_to_multi	params.h	/^    int attached_to_multi;$/;"	m	struct:bb_state
+bb_data	main.c	/^struct bb_state* bb_data;$/;"	v	typeref:struct:bb_state
+bb_state	params.h	/^struct bb_state {$/;"	s
+blksize	params.h	/^    unsigned blksize;$/;"	m	struct:bb_state
+cacert	params.h	/^    char* cacert;$/;"	m	struct:bb_state
+capath	params.h	/^    char* capath;$/;"	m	struct:bb_state
+cert	params.h	/^    char* cert;$/;"	m	struct:bb_state
+cert_type	params.h	/^    char* cert_type;$/;"	m	struct:bb_state
+ciphers	params.h	/^    char* ciphers;$/;"	m	struct:bb_state
+connect_timeout	params.h	/^    int connect_timeout;$/;"	m	struct:bb_state
+connection	params.h	/^    CURL* connection;$/;"	m	struct:bb_state
+curl_version	params.h	/^    curl_version_info_data* curl_version;$/;"	m	struct:bb_state
+custom_list	params.h	/^    char* custom_list;$/;"	m	struct:bb_state
+data	CService.h	/^    char* data;$/;"	m	struct:_HttpData_
+datalen	CService.h	/^    int datalen;$/;"	m	struct:_HttpData_
+debug	params.h	/^    int debug;$/;"	m	struct:bb_state
+disable_eprt	params.h	/^    int disable_eprt;$/;"	m	struct:bb_state
+disable_epsv	params.h	/^    int disable_epsv;$/;"	m	struct:bb_state
+engine	params.h	/^    char* engine;$/;"	m	struct:bb_state
+error_str	CService.h	/^	string				error_str;$/;"	m	class:Service
+ftp_method	params.h	/^    char* ftp_method;$/;"	m	struct:bb_state
+ftp_port	params.h	/^    char* ftp_port;$/;"	m	struct:bb_state
+fuse_operations	main.c	/^ static struct vsfuse_oper : fuse_operations  {$/;"	s	file:
+get_file_content	main.c	/^int get_file_content( char* path, unsigned char** buf, int * nLen )$/;"	f
+get_file_size	main.c	/^int get_file_size(char *filename)$/;"	f
+httpgeturl	params.h	/^    char* httpgeturl;$/;"	m	struct:bb_state
+httpposturl	params.h	/^    char* httpposturl;$/;"	m	struct:bb_state
+interface	params.h	/^    char* interface;$/;"	m	struct:bb_state
+key	params.h	/^    char* key;$/;"	m	struct:bb_state
+key_password	params.h	/^    char* key_password;$/;"	m	struct:bb_state
+key_type	params.h	/^    char* key_type;$/;"	m	struct:bb_state
+krb4	params.h	/^    char* krb4;$/;"	m	struct:bb_state
+log_conn	log.c	/^void log_conn(struct fuse_conn_info *conn)$/;"	f
+log_fi	log.c	/^void log_fi (struct fuse_file_info *fi)$/;"	f
+log_fuse_context	log.c	/^void log_fuse_context(struct fuse_context *context)$/;"	f
+log_msg	log.c	/^void log_msg(const char *format, ...)$/;"	f
+log_open	log.c	/^FILE *log_open()$/;"	f
+log_stat	log.c	/^void log_stat(struct stat *si)$/;"	f
+log_statvfs	log.c	/^void log_statvfs(struct statvfs *sv)$/;"	f
+log_struct	log.h	13;"	d
+log_utime	log.c	/^void log_utime(struct utimbuf *buf)$/;"	f
+logfile	params.h	/^    FILE *logfile;$/;"	m	struct:bb_state
+logfile	typedef.h	/^    FILE* logfile;$/;"	m	struct:mfs_state
+m_FileLen	CService.h	/^    unsigned long	m_FileLen;$/;"	m	struct:_FILEACCESS_
+m_FileMode	CService.h	/^    int m_FileMode;$/;"	m	struct:_FILEACCESS_
+m_lpHttpData	CService.h	/^    const HTTPDATA*		m_lpHttpData;$/;"	m	class:Service
+m_pFileAccessStruct	CService.h	/^    FILEACCESS*			m_pFileAccessStruct;$/;"	m	class:Service
+m_pFileWriteStruct	CService.h	/^    FILEWRITE*			m_pFileWriteStruct;$/;"	m	class:Service
+m_pGetDownLoadProcess	CService.h	/^    GETPROCESS*			m_pGetDownLoadProcess;$/;"	m	class:Service
+m_pGetProcess	CService.h	/^    GETPROCESS*			m_pGetProcess;$/;"	m	class:Service
+m_resp_buffer	CService.h	/^    string				m_resp_buffer;$/;"	m	class:Service
+m_resp_header	CService.h	/^    string				m_resp_header;$/;"	m	class:Service
+main	main.c	/^int main(int argc, char *argv[])$/;"	f
+mfs_create	main.c	/^static int mfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)$/;"	f	file:
+mfs_getattr	main.c	/^static int mfs_getattr(const char *path, struct stat *stbuf)$/;"	f	file:
+mfs_init	main.c	/^void *mfs_init(struct fuse_conn_info *conn)$/;"	f
+mfs_mkdir	main.c	/^static int mfs_mkdir(const char *path, mode_t mode)$/;"	f	file:
+mfs_open	main.c	/^static int mfs_open(const char *path, struct fuse_file_info *fi)$/;"	f	file:
+mfs_opendir	main.c	/^int mfs_opendir(const char *path, struct fuse_file_info *fi)$/;"	f
+mfs_oper	main.c	/^ }mfs_oper;$/;"	v	typeref:struct:fuse_operations	file:
+mfs_read	main.c	/^static int mfs_read(const char *path, char *buf, size_t size, off_t offset,$/;"	f	file:
+mfs_readdir	main.c	/^static int mfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,$/;"	f	file:
+mfs_rmdir	main.c	/^static int mfs_rmdir(const char *path)$/;"	f	file:
+mfs_state	typedef.h	/^struct mfs_state$/;"	s
+mfs_unlink	main.c	/^static int mfs_unlink(const char *path)$/;"	f	file:
+mfs_utimens	main.c	/^static int mfs_utimens(const char *path, const struct timespec ts[2])$/;"	f	file:
+mfs_write	main.c	/^static int mfs_write(const char *path, const char *buf, size_t size,$/;"	f	file:
+no_verify_hostname	params.h	/^    int no_verify_hostname;$/;"	m	struct:bb_state
+no_verify_peer	params.h	/^    int no_verify_peer;$/;"	m	struct:bb_state
+post_file	main.c	/^int post_file( const char* path )$/;"	f
+post_file1	main.c	/^int post_file1( char* path )$/;"	f
+postion	CService.h	/^    int postion;$/;"	m	struct:_HttpData_
+request_headers	CService.h	/^    const vector<string>& request_headers() const {$/;"	f	class:Service
+request_headers_	CService.h	/^    vector<string>		request_headers_;$/;"	m	class:Service
+rootdir	params.h	/^    char *rootdir;$/;"	m	struct:bb_state
+rootdir	typedef.h	/^    char* rootdir;$/;"	m	struct:mfs_state
+set_request_headers	CService.h	/^    void set_request_headers( const vector<string>& headers )$/;"	f	class:Service
+skip_pasv_ip	params.h	/^    int skip_pasv_ip;$/;"	m	struct:bb_state
+std	main.c	/^using namespace std;$/;"	v
+tcp_nodelay	params.h	/^    int tcp_nodelay;$/;"	m	struct:bb_state
+test1	main.c	/^int test1()$/;"	f
+totallen	CService.h	/^    int totallen;$/;"	m	struct:_HttpData_
+transform_symlinks	params.h	/^    int transform_symlinks;$/;"	m	struct:bb_state
+use_ssl	params.h	/^    int use_ssl;$/;"	m	struct:bb_state
+verbose	params.h	/^    int verbose;$/;"	m	struct:bb_state
+version	CService.h	/^    int version;$/;"	m	struct:_FILEWRITE_
+version	CService.h	/^    int version;$/;"	m	struct:_GETPROCESS_
+vsfuse_oper	main.c	/^     vsfuse_oper()$/;"	f	struct:fuse_operations
+~Service	CService.h	/^    ~Service() {}$/;"	f	class:Service
