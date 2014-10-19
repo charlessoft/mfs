@@ -86,7 +86,7 @@ int get_file( const char* path )
 
 int post_file( const char* path )
 {
-    string strUrl = "http://10.142.49.238:9080/udsfs/uploadfile";
+    //string strUrl = "http://10.142.49.238:9080/udsfs/uploadfile";
     string postFileData;
     string strBoundary = "----WebKitFormBoundaryx386qjAs2dAgshUG";
     string formMultipart = "Content-Type: multipart/form-data; boundary=" + strBoundary;
@@ -107,16 +107,6 @@ int post_file( const char* path )
     else 
         postFileData.append( path, strlen(path) );
 
-    //修改--判断文件
-    //if(access(path,F_OK) == 0 )
-    //{
-    //}
-    //else
-    //{
-        //nLen = strlen( path );
-        //postFileData.append( path, nLen ); 
-    //}
-
     postFileData += "\r\n";
 
     postFileData = postFileData + "--" + strBoundary + "--\r\n";
@@ -129,7 +119,7 @@ int post_file( const char* path )
     Service CService;
 
 
-    nres = CService.HttpRequest( "POST", strUrl, &postFormData,custom_headers,&CService);
+    nres = CService.HttpRequest( "POST", BB_DATA->httpposturl, &postFormData,custom_headers,&CService);
     log_msg("\npost_file()\n    respbuf=%s\n",CService.m_resp_buffer.c_str());
     if ( nres ==0 && nLen>0 ) {
         return nLen;
