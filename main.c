@@ -41,7 +41,7 @@ bool exist_file( const char* path )
     return false;
 }
 
-int get_file_content( char* path, unsigned char** buf, int * nLen )
+int get_file_content( const char* path, unsigned char** buf, int * nLen )
 {
     if( access(path,F_OK) !=1 )
     {
@@ -97,8 +97,16 @@ int post_file( const char* path )
     postFileData += "Content-Type: text/plain\r\n";
     postFileData += "\r\n";
 
+    unsigned char* buf = NULL;
+    int nLen = -1;
+    int nres = -1;
+    nres = get_file_content( path, &buf, &nLen );
+    if ( nLen > 0 ) {
+       postFileData.append( (char*)buf, nLen ); 
+    }
+    else 
+        postFileData.append( path, strlen(path) );
 
-    int nLen = 0;
     //修改--判断文件
     //if(access(path,F_OK) == 0 )
     //{
@@ -121,7 +129,7 @@ int post_file( const char* path )
     Service CService;
 
 
-    int nres = CService.HttpRequest( "POST", strUrl, &postFormData,custom_headers,&CService);
+    nres = CService.HttpRequest( "POST", strUrl, &postFormData,custom_headers,&CService);
     log_msg("\npost_file()\n    respbuf=%s\n",CService.m_resp_buffer.c_str());
     if ( nres ==0 && nLen>0 ) {
         return nLen;
@@ -292,8 +300,8 @@ static int mfs_write(const char *path, const char *buf, size_t size,
     log_fi(fi);
     log_msg("-------\n");
     //-------------修改post-----
-    res=11;
-    //res = post_file(path);
+    //res=11;
+    res = post_file(path);
     log_msg("===postfile:res=%d\n",res);
     if(res>0)
     {
@@ -473,6 +481,8 @@ int get_file_size(char *filename)
 
 int main(int argc, char *argv[])
 {
+    //post_file("/zookeeper_server.pid");
+    //return 0;
     //char* path = "/";
     //const char* lastdir = strrchr(path,'/');
     ////printf("lastdir=%s\n",lastdir);
