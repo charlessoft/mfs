@@ -68,9 +68,17 @@ int get_file_content( const char* path, unsigned char** buf, int * nLen )
 int get_file( const char* path )
 {
     log_msg("\nget_file()\n    path=%s\n",path);
-    //Service CService;
-    //CService.HttpRequest("GET", BB_DATA->httpgeturl,)
-    return -1;
+    Service CService;
+    //string url = "http://10.211.55.8/getdata.php?key=ss";
+    vector<string> customheader;
+    int nres =  CService.HttpRequest("GET", path ,NULL,customheader,&CService);
+    //int nres =  CService.HttpRequest("GET", url.c_str(),NULL,customheader,&CService);
+   if(nres == CURLE_OK)
+   {
+       log_msg("download buf=%s\n",CService.m_resp_buffer.c_str());
+       printf("download buf=%s\n",CService.m_resp_buffer.c_str());
+   }
+   return -1;
 }
 
 int post_file( const char* path )
@@ -264,13 +272,9 @@ static int mfs_write(const char *path, const char *buf, size_t size,
                      off_t offset, struct fuse_file_info *fi)
 {
     log_msg("\nmfs_write()\n    path=%s\n    buf=0x%08x\n    size=%d\n    offset=%d\n",path,buf,size,offset);
-    //int fd;
     int res;
 
     log_fi(fi);
-    log_msg("-------\n");
-    //-------------修改post-----
-    //res=11;
     res = post_file(path);
     log_msg("===postfile:res=%d\n",res);
     if(res>0)
@@ -317,8 +321,7 @@ static int mfs_read(const char *path, char *buf, size_t size, off_t offset,
     strcat(szfileurl,path+1);
 
     log_msg("\n------download url = %s\n", szfileurl );
-
-    //curl_easy_setopt(easy_handle, CURLOPT_URL, szfileurl);
+    get_file( szfileurl );
 
     //(void) fi;
     //fd = open(path, O_RDONLY);
@@ -389,42 +392,6 @@ static struct vsfuse_oper : fuse_operations  {
     }   
 }mfs_oper;
 
-//static struct fuse_operations mfs_oper = {
-//.init       = mfs_init,
-////目录操作
-//.getattr	= mfs_getattr,
-//.readdir	= mfs_readdir,
-//.mkdir		= mfs_mkdir,
-//.rmdir		= mfs_rmdir,
-
-////创建文件操作回调
-//.create		= mfs_create, 
-//.open		= mfs_open,
-//.utimens	= mfs_utimens,
-
-////删除文件
-//.unlink		= mfs_unlink, 
-
-////文件读写回调
-//.read		= mfs_read,
-//.write		= mfs_write,
-
-////.rename		= mfs_rename,
-////.truncate	= mfs_truncate,
-////.opendir    = mfs_opendir,
-////.access		= mfs_access,
-////.readlink	= mfs_readlink,
-////.mknod		= mfs_mknod,
-////.symlink	= mfs_symlink,
-////.link		= mfs_link,
-////.chmod		= mfs_chmod,
-////.chown		= mfs_chown,
-////.statfs		= mfs_statfs,
-////.release	= mfs_release,
-////.fsync		= mfs_fsync,
-//};
-
-
 
 int get_file_size(char *filename)
 {
@@ -452,10 +419,12 @@ int get_file_size(char *filename)
 int main(int argc, char *argv[])
 {
 
+    //get_file("sss");
+    //return 1;
     bb_data = (bb_state*)malloc(sizeof(struct bb_state));
     memset(bb_data, 0, sizeof(bb_data));
     bb_data->logfile = log_open();
-    bb_data->httpgeturl = "http://10.211.5.8/getdata.php?key=";
+    bb_data->httpgeturl = "http://10.211.55.8/getdata.php?key=";
     bb_data->httpposturl = "http://10.142.49.238:9080/udsfs/uploadfile";
     //
     return fuse_main(argc, argv, &mfs_oper, bb_data);

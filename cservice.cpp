@@ -125,7 +125,7 @@ int Service::HttpRequest( const string http_method,
         curl_easy_setopt( curl, CURLOPT_WRITEHEADER, lpService ); //"headers" is a member variable referencing HttpHeaders
         curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, 0L );
         curl_easy_setopt( curl, CURLOPT_SSL_VERIFYHOST, 0L );
-        curl_easy_setopt( curl, CURLOPT_VERBOSE , 1 );
+        //curl_easy_setopt( curl, CURLOPT_VERBOSE , 1 );
 
         //下载进度条
         curl_easy_setopt( curl, CURLOPT_NOPROGRESS, FALSE );
