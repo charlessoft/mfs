@@ -53,14 +53,6 @@ int get_file_content( const char* path, unsigned char** buf, int * nLen )
             fseek( fp, 0, SEEK_SET );
             if( *nLen > 0 )
             {
-                //char* pData = new char[*nLen];
-                //memset( pData, 0, sizeof(*nLen) );
-                //fread( pData, 1, *nLen, fp );
-                //fclose( fp );
-                //fp = NULL;
-                ////postFileData.append( pData, *nLen );
-                //delete []pData;
-                //pData = NULL;
                 *buf = new unsigned char[*nLen];
                 memset( *buf, 0 ,sizeof(*nLen));
                 fread(*buf,1,*nLen,fp);
@@ -76,7 +68,7 @@ int get_file_content( const char* path, unsigned char** buf, int * nLen )
 int get_file( const char* path )
 {
     log_msg("\nget_file()\n    path=%s\n",path);
-    Service CService;
+    //Service CService;
     //CService.HttpRequest("GET", BB_DATA->httpgeturl,)
     return -1;
 }
@@ -459,38 +451,6 @@ int get_file_size(char *filename)
 
 int main(int argc, char *argv[])
 {
-    //post_file("/zookeeper_server.pid");
-    //return 0;
-    //char* path = "/";
-    //const char* lastdir = strrchr(path,'/');
-    ////printf("lastdir=%s\n",lastdir);
-    //printf("ss=%d\n",lastdir-path);
-    //return 0;
-    //unsigned char* buf= NULL;
-    //int nlen =0;
-    //char* pdata = "/ss";
-    //int nres = get_file_content( pdata,&buf, &nlen );
-    //printf("nres=%d\nnlen=%d",nres,nlen);
-    ////printf("buf=%s",buf);
-    //return 1;
-    //
-    //post_file("/ss");
-    //return 1;
-    //test1();
-    //printf("hello\n");
-    //用户保存全局数据
-    //struct mfs_state *mfs_data;
-    //mfs_data  = malloc(sizeof( struct mfs_state ) );
-    //CURLcode curl_res;
-    //CURL* easy;
-    //curl_res = curl_global_init(CURL_GLOBAL_ALL);
-    //if(curl_res != CURLE_OK )
-    //{
-    //log_msg("\ncurl init fail\n");
-    //return -1;
-    //}
-
-
 
     bb_data = (bb_state*)malloc(sizeof(struct bb_state));
     memset(bb_data, 0, sizeof(bb_data));

@@ -35,12 +35,6 @@ env:
 	cd ${CURL_FILE} && make
 	cd ${CURL_FILE} && make install
 
-	tar zxvf ${PKGCONFIG_FILE}.tar.gz
-	cd ${PKGCONFIG_FILE} && \
-		./configure
-	cd ${PKGCONFIG_FILE} && make 
-	cd ${PKGCONFIG_FILE} && make install
-
 php:
 	sudo apt-get install apache2
 	sudo apt-get install php5
