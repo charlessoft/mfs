@@ -74,6 +74,10 @@ public:
 
     ~Service() {}
 
+    void clean(){
+    m_resp_buffer = "";
+    m_resp_header = "";
+    }
     int					HttpRequest( const string http_method,const string url,  const HTTPDATA* lpHttpData, const vector<string> custom_headers, Service* lpService );
 
     void				SetUploadProcess( GETPROCESS* pGetProcess );

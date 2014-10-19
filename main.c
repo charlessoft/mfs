@@ -21,28 +21,41 @@
 #include <vector>
 using namespace std;
 #include "log.h"
+#include <map>
 
 vector<string> g_cache;
+map<string,string> g_filecache;
 
+int content_size;
+Service CService;
 struct bb_state* bb_data;
 
 bool exist_file( const char* path )
 {
 
-    vector<string>::iterator iter;  
-    for (iter=g_cache.begin();iter!=g_cache.end();iter++)  
-    {  
-        string str = *iter;
-        if( str == path )
-            return true;
-        //cout<<*iter<<'\0';  
-        //filler(buf,(*iter).c_str(),null,0);
-    }  
+    map<string,string>::iterator iter;
+    iter = g_filecache.find( path );
+    if( iter != g_filecache.end() )
+    {
+        //查找到
+        return true;
+    }
+    return false;
+    //vector<string>::iterator iter;  
+    //for (iter=g_cache.begin();iter!=g_cache.end();iter++)  
+    //{  
+        //string str = *iter;
+        //if( str == path )
+            //return true;
+        ////cout<<*iter<<'\0';  
+        ////filler(buf,(*iter).c_str(),null,0);
+    //}  
     return false;
 }
 
 int get_file_content( const char* path, unsigned char** buf, int * nLen )
 {
+    log_msg("\nget_file_content()\n    path=%s\n",path);
     if( access(path,F_OK) !=1 )
     {
         FILE* fp = fopen( path, "rb" );
@@ -68,15 +81,16 @@ int get_file_content( const char* path, unsigned char** buf, int * nLen )
 int get_file( const char* path )
 {
     log_msg("\nget_file()\n    path=%s\n",path);
-    Service CService;
+    //Service CService;
     //string url = "http://10.211.55.8/getdata.php?key=ss";
     vector<string> customheader;
+    CService.clean();
     int nres =  CService.HttpRequest("GET", path ,NULL,customheader,&CService);
     //int nres =  CService.HttpRequest("GET", url.c_str(),NULL,customheader,&CService);
    if(nres == CURLE_OK)
    {
        log_msg("download buf=%s\n",CService.m_resp_buffer.c_str());
-       printf("download buf=%s\n",CService.m_resp_buffer.c_str());
+       return CURLE_OK;
    }
    return -1;
 }
@@ -97,11 +111,15 @@ int post_file( const char* path )
     int nLen = -1;
     int nres = -1;
     nres = get_file_content( path, &buf, &nLen );
+    log_msg("post_file: get_file_content nres=%d\n",nres);
     if ( nLen > 0 ) {
        postFileData.append( (char*)buf, nLen ); 
     }
     else 
-        postFileData.append( path, strlen(path) );
+    {
+        nLen = strlen(path+1);
+        postFileData.append( path+1, nLen );
+    }
 
     postFileData += "\r\n";
 
@@ -112,9 +130,9 @@ int post_file( const char* path )
     postFormData.data = (char*)postFileData.data();
     postFormData.datalen = postFileData.size();
     postFormData.totallen = postFileData.size();
-    Service CService;
 
 
+    CService.clean();
     nres = CService.HttpRequest( "POST", BB_DATA->httpposturl, &postFormData,custom_headers,&CService);
     log_msg("\npost_file()\n    respbuf=%s\n",CService.m_resp_buffer.c_str());
     if ( nres ==0 && nLen>0 ) {
@@ -133,15 +151,31 @@ void *mfs_init(struct fuse_conn_info *conn)
 static int mfs_getattr(const char *path, struct stat *stbuf)
 {
 	log_msg("\nmfs_getattr\n    path=%s\n",path);
-	//get_file(path);
-	log_stat(stbuf);
-	//return 0;
-	int res = 0;
-	res = lstat(path, stbuf);
-	log_msg("\nmfs_getattr--lstat()\n    res=%d",res);
-	log_stat(stbuf);
-	if (res == -1)
-		return -errno;
+    map<string,string>::iterator iter;
+    //memset(st, 0, sizeof(struct stat));
+    //for( iter = g_filecache.begin(); iter!= g_filecache.end();iter++)
+    //{
+        //if (strcmp(path, "/") == 0) {
+            //st->st_mode = 0755 | S_IFDIR;
+            //st->st_size = strlen(fname);
+        //} else {
+            //st->st_mode = 0644 | S_IFREG;
+            //st->st_size = content_size;
+        //}
+    //}
+
+    get_file(path);
+    log_stat(stbuf);
+    int res = 0;
+    res = lstat(path, stbuf);
+    if( stbuf->st_mode & S_IFREG )
+    {
+        stbuf->st_size = content_size;
+    }
+    log_msg("\nmfs_getattr--lstat()\n    res=%d",res);
+    log_stat(stbuf);
+    if (res == -1)
+        return -errno;
 
 	return 0;
 }
@@ -169,12 +203,17 @@ static int mfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
     log_msg("\nmfs_readdir()\n    path=%s\n    buf=0x%08x\n",path,buf);
 
     
-    vector<string>::iterator iter;  
-    for (iter=g_cache.begin();iter!=g_cache.end();iter++)  
-    {  
-        //cout<<*iter<<'\0';  
-        filler(buf,(*iter).c_str(),NULL,0);
-    }  
+    //vector<string>::iterator iter;  
+    //for (iter=g_cache.begin();iter!=g_cache.end();iter++)  
+    //{  
+        ////cout<<*iter<<'\0';  
+        //filler(buf,(*iter).c_str(),NULL,0);
+    //}  
+    map<string,string>::iterator iter;
+    for( iter = g_filecache.begin(); iter!= g_filecache.end();iter++)
+    {
+        filler( buf, iter->first.c_str(), NULL, 0 );
+    }
     return 0;
 	DIR *dp;
 	struct dirent *de;
@@ -279,8 +318,11 @@ static int mfs_write(const char *path, const char *buf, size_t size,
     log_msg("===postfile:res=%d\n",res);
     if(res>0)
     {
-        if(!exist_file(path+1))
-            g_cache.push_back(path+1);
+        if(!exist_file( path+1))
+        {
+            g_filecache[path+1] = CService.m_resp_buffer.substr(1,CService.m_resp_buffer.size() -2 );
+        }
+            //g_cache.push_back( path+1 );
     }
     return res;
 
@@ -315,14 +357,29 @@ static int mfs_read(const char *path, char *buf, size_t size, off_t offset,
     log_fi(fi);
     //int fd;
     int res = 0;
+    int bytes = 0;
 
     char szfileurl[256] = {0};
     strcpy(szfileurl,BB_DATA->httpgeturl);
-    strcat(szfileurl,path+1);
+    strcat(szfileurl,g_filecache[path+1].c_str());
 
     log_msg("\n------download url = %s\n", szfileurl );
-    get_file( szfileurl );
 
+    int nres = get_file( szfileurl );
+    if ( nres == CURLE_OK ) {
+        log_msg("\n---!!!ok\n");
+        CService.m_resp_buffer+="\n";
+        memcpy( buf, CService.m_resp_buffer.c_str(), CService.m_resp_buffer.size() );
+        bytes = CService.m_resp_buffer.size();
+        return bytes;
+    }
+    
+    return bytes;
+
+
+
+    //strcpy(buf,"abcd"); 
+    //return 4;
     //(void) fi;
     //fd = open(path, O_RDONLY);
     //if (fd == -1)
@@ -419,12 +476,13 @@ int get_file_size(char *filename)
 int main(int argc, char *argv[])
 {
 
+    content_size = 100;
     //get_file("sss");
     //return 1;
     bb_data = (bb_state*)malloc(sizeof(struct bb_state));
     memset(bb_data, 0, sizeof(bb_data));
     bb_data->logfile = log_open();
-    bb_data->httpgeturl = "http://10.211.55.8/getdata.php?key=";
+    bb_data->httpgeturl = "http://10.142.49.238:9080/udsfs/getfile?id=";
     bb_data->httpposturl = "http://10.142.49.238:9080/udsfs/uploadfile";
     //
     return fuse_main(argc, argv, &mfs_oper, bb_data);
