@@ -16,7 +16,7 @@
 #include <curl/easy.h>
 #include <pthread.h>
 #include <pthread.h>
-#include "CService.h"
+#include "cservice.h"
 #include <string>
 #include <vector>
 using namespace std;
@@ -70,10 +70,7 @@ int get_file_content( const char* path, unsigned char** buf, int * nLen )
             return *nLen;
         }
     }
-    else
-    {
-        return -1;
-    }
+    return -1;
 }
 
 int get_file( const char* path )
@@ -123,6 +120,7 @@ int post_file( const char* path )
     if ( nres ==0 && nLen>0 ) {
         return nLen;
     }
+    return 0;
 }
 
 void *mfs_init(struct fuse_conn_info *conn)
@@ -154,7 +152,6 @@ int mfs_opendir(const char *path, struct fuse_file_info *fi)
     log_msg("\nmfs_opendir()\n    path=%s\n",path);
     DIR *dp;
     int retstat = 0;
-    char fpath[PATH_MAX];
     
     dp = opendir(path);
     

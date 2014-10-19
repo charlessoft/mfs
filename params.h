@@ -30,36 +30,6 @@ struct bb_state {
     char* httpposturl;
     FILE *logfile;
     char *rootdir;
-    CURL* connection;
-    int attached_to_multi;
-    /*struct ftpfs_file* current_fh;*/
-    unsigned blksize;
-    int verbose;
-    int debug;
-    curl_version_info_data* curl_version;
-    int transform_symlinks;
-    int disable_epsv;
-    int skip_pasv_ip;
-    char* ftp_method;
-    char* custom_list;
-    int tcp_nodelay;
-    char* ftp_port;
-    int disable_eprt;
-    int connect_timeout;
-    int use_ssl;
-    int no_verify_hostname;
-    int no_verify_peer;
-    char* cert;
-    char* cert_type;
-    char* key;
-    char* key_type;
-    char* key_password;
-    char* engine;
-    char* cacert;
-    char* capath;
-    char* ciphers;
-    char* interface;
-    char* krb4;
 };
 #define BB_DATA ((struct bb_state *) fuse_get_context()->private_data)
 

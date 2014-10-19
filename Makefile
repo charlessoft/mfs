@@ -4,7 +4,7 @@ PKGCONFIG_FILE=pkg-config-0.28
 #-----
 SOURCES=./main.c \
 		./log.c \
-		./CService.cpp
+		./cservice.cpp
 GXX=g++ -g -Wall
 CPPFLAGS=-D_FILE_OFFSET_BITS=64
 LDFLAGS=-lstdc++ -lcurl -pthread -lfuse
